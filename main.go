@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -46,12 +47,22 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(simpleMsg{Code: 200, Msg: fmt.Sprintf("%v uploaded to %v", handler.Filename, tempFile.Name())})
 }
 
+type todo struct {
+	Title  string
+	Phrase string
+}
+
 func homePage(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "application/json")
-	w.WriteHeader(234)
-	json.NewEncoder(w).Encode(simpleMsg{Code: 404, Msg: "random text"})
-	// fmt.Fprintf(w, "Welcome to the HomePage!\n")
-	log.Println("Endpoint Hit: homePage")
+	context := todo{"This is a title", "A paragraph is such a line of text"}
+	template, err := template.ParseFiles("test.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if err := template.Execute(w, context); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func staticUploadFile(w http.ResponseWriter, r *http.Request) {
