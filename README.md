@@ -1,5 +1,7 @@
 # Upload Server
 
+![upload layout](UYsFAHP.jpeg)
+
 ### Todo
 - [ ] Get file parser/checker
 - [ ] Learn/use rendering html template
