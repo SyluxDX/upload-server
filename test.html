@@ -2,10 +2,27 @@
 <head>
     <title>Upload Form</title>
 </head>
+<style>
+    tr:nth-child(even) {
+  background-color: #e5e9ff;
+}
+</style>
 <body>
     <h1>Upload files</h1>
     <h2>{{.Title}}</h2>
     <p>{{.Phrase}}</p>
+    <p>list:</p>
+    <ul>
+        {{range .List}}
+        <li>{{.}}</li>
+        {{end}}
+    </ul>
+
+    <table>
+        {{range .Table}}
+        <tr><td>{{.}}</td></tr>
+        {{end}}
+    </table>
 </body>
 
 </html>

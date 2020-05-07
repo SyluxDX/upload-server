@@ -50,10 +50,14 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 type todo struct {
 	Title  string
 	Phrase string
+	List   []string
+	Table  []string
 }
 
 func homePage(w http.ResponseWriter, r *http.Request) {
-	context := todo{"This is a title", "A paragraph is such a line of text"}
+	lst := []string{"itqm", "asd", "qwe"}
+	tbl := []string{"line1", "liune 2 is basdmasd", "iulxcvlkqwe lkjzs", "qwezxcqawe"}
+	context := todo{"This is a title", "A paragraph is such a line of text", lst, tbl}
 	template, err := template.ParseFiles("test.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
