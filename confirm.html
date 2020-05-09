@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Upload Form</title>
+    <title>Upload Confirmation</title>
 </head>
 <style>
     html {
@@ -38,24 +38,32 @@
         border-radius: 7px;
     }
 
-    .feedback-input {
-        color: #3c3c3c;
-        font-family: Helvetica, Arial, sans-serif;
-        font-weight: 500;
-        font-size: 18px;
-        border-radius: 0;
-        line-height: 22px;
-        background-color: #fbfbfb;
-        padding: 13px 13px 13px 54px;
-        margin-bottom: 10px;
-        width: 100%;
-        box-sizing: border-box;
-        border: 3px solid #00000000;
+	table {
+		font-family: Arial, Helvetica, sans-serif;
+		width: 100%;
+		background-color: #ffffff;
+		border-collapse: collapse;
+		border-radius: 10px;
+	}
+	
+	td{
+		text-align: left;
+		padding: 8px;
+	}
+	
+    tr:nth-child(even) {
+        background-color: #e5e9ff;
     }
 
     .submit {
         text-align: center;
     }
+	
+	.text {
+		font-family: 'Montserrat', Arial, Helvetica, sans-serif;
+		color: white;
+		font-size: 20px;
+	}
 
     .button-blue {
         font-family: 'Montserrat', Arial, Helvetica, sans-serif;
@@ -92,13 +100,18 @@
     <div class="container">
         <div id="form-main">
             <div id="form-div">
-                <form class="montform" id="reused_form" enctype="multipart/form-data"
-                    action="confirm" method="post">
-                    <p class="file">
-                        <input name="myFile" type="file" id="file" class="feedback-input">
-                    </p>
+                <form class="montform" id="reused_form" action="thankyou" method="post">
+                    <input type="hidden" id="filename" name="filename" value={{.Name}}>
+					<p class="text"><strong>Please confirm the uploaded file</strong></p>
+					<p>
+						<table>
+							{{range .Lines}}
+							<tr><td>{{.}}</td></tr>
+							{{end}}
+						</table>
+					</p>
                     <div class="submit">
-                        <button type="submit" class="button-blue">Upload</button>
+                        <button type="submit" class="button-blue">Confirm</button>
                     </div>
                 </form>
             </div>
