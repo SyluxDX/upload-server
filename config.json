@@ -1,5 +1,5 @@
 {
-  "serverUrl": "127.0.0.1",
+  "serverUrl": "0.0.0.0",
   "serverPort": 8080,
   "uploadFolder": "upload",
   "tempFolder": "temp"
