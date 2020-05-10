@@ -57,7 +57,7 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	// check uploaded file
 	confirm.Lines = utils.ParseUpload(fileBytes)
 
-	template, err := template.ParseFiles("confirm.html")
+	template, err := template.ParseFiles("html/confirm.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -74,12 +74,12 @@ func processFile(w http.ResponseWriter, r *http.Request) {
 	// move file to upload folder
 	os.Rename(path, filepath.Join("upload", filename))
 	// Serve final page
-	http.ServeFile(w, r, "thankyou.html")
+	http.ServeFile(w, r, "html/thankyou.html")
 }
 
 func setupRoutes() {
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, "upload.html")
+		http.ServeFile(w, r, "html/upload.html")
 	})
 	http.HandleFunc("/confirm", uploadFile)
 	http.HandleFunc("/thankyou", processFile)
