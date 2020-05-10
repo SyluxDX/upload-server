@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -9,6 +8,8 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+
+	"./utils"
 )
 
 type simpleMsg struct {
@@ -20,14 +21,20 @@ type confimation struct {
 	Lines []string
 }
 
+//Configs Global variable containing Configurations
+var (
+	Configs utils.Configurations
+)
+
 func uploadFile(w http.ResponseWriter, r *http.Request) {
 	r.ParseMultipartForm(32 << 20)
 	file, _, err := r.FormFile("myFile")
 	if err != nil {
 		log.Println(err)
-		w.Header().Add("Content-Type", "application/json")
-		w.WriteHeader(404)
-		json.NewEncoder(w).Encode(simpleMsg{Code: 404, Msg: "File not found"})
+		// w.Header().Add("Content-Type", "application/json")
+		// w.WriteHeader(404)
+		// json.NewEncoder(w).Encode(simpleMsg{Code: 404, Msg: "File not found"})
+		fmt.Fprintf(w, "File Not found")
 		return
 	}
 	defer file.Close()
@@ -45,13 +52,10 @@ func uploadFile(w http.ResponseWriter, r *http.Request) {
 	// write this byte array to our temporary file
 	tempFile.Write(fileBytes)
 
-	st := string(fileBytes)
-	fmt.Println(st)
-
 	// request Confirmation page
 	confirm := confimation{tempFile.Name(), []string{}}
 	// check uploaded file
-	confirm.Lines = parseTesters(fileBytes)
+	confirm.Lines = utils.ParseUpload(fileBytes)
 
 	template, err := template.ParseFiles("confirm.html")
 	if err != nil {
@@ -80,19 +84,20 @@ func setupRoutes() {
 	http.HandleFunc("/confirm", uploadFile)
 	http.HandleFunc("/thankyou", processFile)
 
-	url := "127.0.0.1"
-	port := 8080
-	log.Printf("Serving on %[1]s port %[2]d (http://%[1]s:%[2]d/)\n", url, port)
-	http.ListenAndServe(fmt.Sprintf("%s:%d", url, port), nil)
-}
-
-func setupStuff() {
-	os.Mkdir("upload", os.ModePerm)
-	os.Mkdir("temp", os.ModePerm)
+	log.Printf("Serving on %[1]s port %[2]d (http://%[1]s:%[2]d/)\n", Configs.ServerURL, Configs.ServerPort)
+	http.ListenAndServe(fmt.Sprintf("%s:%d", Configs.ServerURL, Configs.ServerPort), nil)
 }
 
 func main() {
 	log.Println("Preping server")
-	setupStuff()
+	var err error
+	Configs, err = utils.GetConfigs()
+	if err != nil {
+		log.Fatalln(err)
+	}
+	// Create folders if not exist
+	os.Mkdir(Configs.UploadFolder, os.ModePerm)
+	os.Mkdir(Configs.TempFolder, os.ModePerm)
+	// Setup Server
 	setupRoutes()
 }
